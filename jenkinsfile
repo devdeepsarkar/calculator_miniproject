@@ -9,7 +9,8 @@ pipeline {
 
         stage('Clone Git') {
             steps {
-                git 'https://github.com/devdeepsarkar/calculator_miniproject.git'
+                git branch: 'main',
+                    url: 'https://github.com/devdeepsarkar/calculator_miniproject.git'
             }
         }
 
