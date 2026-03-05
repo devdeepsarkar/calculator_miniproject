@@ -8,10 +8,10 @@ pipeline {
 
     stages {
 
-        stage('Clone Git') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/devdeepsarkar/calculator_miniproject.git'
+                url: 'https://github.com/devdeepsarkar/calculator_miniproject.git'
             }
         }
 
@@ -35,14 +35,15 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'DockerHubCred',
-                usernameVariable: 'USER',
-                passwordVariable: 'PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'DockerHubCred',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS')]) {
 
-                sh '''
-                docker login -u $USER -p $PASS
-                docker push $DOCKER_IMAGE
-                '''
+                    sh '''
+                    echo $PASS | docker login -u $USER --password-stdin
+                    docker push $DOCKER_IMAGE:latest
+                    '''
                 }
             }
         }
