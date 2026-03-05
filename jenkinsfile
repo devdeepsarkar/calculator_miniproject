@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "devdeepsarkar/calculator"
+    }
+
+    stages {
+
+        stage('Clone Git') {
+            steps {
+                git 'https://github.com/devdeepsarkar/calculator_miniproject.git'
+            }
+        }
+
+        stage('Build Project') {
+            steps {
+                sh 'python3 -m pip install -r requirements.txt'
+            }
+        }
+
+        stage('Test Project') {
+            steps {
+                sh 'python3 -m unittest test_calculator.py'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DockerHubCred',
+                usernameVariable: 'USER',
+                passwordVariable: 'PASS')]) {
+
+                sh '''
+                docker login -u $USER -p $PASS
+                docker push $DOCKER_IMAGE
+                '''
+                }
+            }
+        }
+
+        // stage('Deploy using Ansible') {
+        //     steps {
+        //         sh 'ansible-playbook -i inventory deploy.yml'
+        //     }
+        // }
+    }
+}
