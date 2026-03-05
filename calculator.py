@@ -9,10 +9,10 @@ def square_root(x):
 # Factorial function
 def factorial(x):
     if x < 0:
-        raise ValueError("Negative number not allowed")
-    elif not x.is_integer():
-        raise ValueError("Factorial is only defined for integers")
-    return math.factorial(x)
+        raise ValueError("Enter valid number")
+    if isinstance(x, float) and not x.is_integer():
+        raise ValueError("Enter valid number")
+    return math.factorial(int(x))
 
 # Natural logarithm
 def natural_log(x):
