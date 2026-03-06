@@ -6,13 +6,7 @@
       name: devdeepsarkar/calculator
       source: pull
 
-  - name: Stop existing container
-    community.docker.docker_container:
-      name: calculator_container
-      state: stopped
-    ignore_errors: yes
-
-  - name: Remove existing container
+  - name: Remove existing container if present
     community.docker.docker_container:
       name: calculator_container
       state: absent
@@ -24,5 +18,8 @@
       image: devdeepsarkar/calculator
       state: started
       recreate: yes
-      ports:
+      tty: true
+      interactive: true
+      restart_policy: always
+      published_ports:
         - "5050:5000"
