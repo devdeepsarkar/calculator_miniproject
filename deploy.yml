@@ -1,8 +1,25 @@
 - hosts: servers
   tasks:
 
-  - name: Pull Docker Image
-    docker_container:
+  - name: Pull latest Docker image
+    community.docker.docker_image:
+      name: devdeepsarkar/calculator
+      source: pull
+
+  - name: Stop existing container
+    community.docker.docker_container:
+      name: calculator_container
+      state: stopped
+    ignore_errors: yes
+
+  - name: Remove existing container
+    community.docker.docker_container:
+      name: calculator_container
+      state: absent
+    ignore_errors: yes
+
+  - name: Start new container
+    community.docker.docker_container:
       name: calculator_container
       image: devdeepsarkar/calculator
       state: started
