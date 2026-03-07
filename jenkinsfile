@@ -10,7 +10,7 @@ pipeline {
         stage('Clone Git') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/devdeepsarkar/calculator_miniproject.git'
+                url: 'https://github.com/devdeepsarkar/calculator_miniproject.git'
             }
         }
 
@@ -34,14 +34,16 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'DockerHubCred',
-                usernameVariable: 'USER',
-                passwordVariable: 'PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'DockerHubCred',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
 
-                sh '''
-                docker login -u $USER -p $PASS
-                docker push $DOCKER_IMAGE
-                '''
+                    sh '''
+                    docker login -u $USER -p $PASS
+                    docker push $DOCKER_IMAGE
+                    '''
                 }
             }
         }
@@ -52,20 +54,24 @@ pipeline {
             }
         }
     }
+
     post {
-        success {
+
+        always {
             emailext(
-                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build succeeded.",
+                subject: "Jenkins Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    Build Status: ${currentBuild.currentResult}
+
+                    Job Name: ${env.JOB_NAME}
+                    Build Number: ${env.BUILD_NUMBER}
+
+                    Check details here:
+                    ${env.BUILD_URL}
+                    """,
                 to: "devdeepsarkar1234@gmail.com"
             )
         }
-        failure {
-            emailext(
-                subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build failed. Check Jenkins console.",
-                to: "devdeepsarkar1234@gmail.com"
-            )
-        }
+
     }
 }
