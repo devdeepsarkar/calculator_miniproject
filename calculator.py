@@ -1,6 +1,6 @@
 import math
 
-# Square root func
+# Square root function
 def square_root(x):
     if x < 0:
         raise ValueError("Negative number not allowed")
