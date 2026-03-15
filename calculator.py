@@ -1,6 +1,6 @@
 import math
 
-# Square root function
+# Suncion to calculate square root
 def square_root(x):
     if x < 0:
         raise ValueError("Negative number not allowed")
